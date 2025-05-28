@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Karting/Scenes/WinScene.unity
     guid: d6801f2e59f75ee4b919cf5da4e48e3b
+  - enabled: 1
+    path: Assets/Scenes/Lobby.unity
+    guid: b006deb1adbae0040905b0146a78f20f
   m_configObjects: {}

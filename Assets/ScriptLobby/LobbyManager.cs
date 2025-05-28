@@ -18,7 +18,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using UnityEngine.SceneManagement;
 public class LobbyManager : MonoBehaviour
 {
-
+    public GameObject botaoInicia;
     public TMP_Text[] lobbyList; 
     public TextMeshProUGUI TextoCodigo;
     public TMP_InputField inputFieldInseriCodigo, InputNome;
@@ -31,6 +31,7 @@ public class LobbyManager : MonoBehaviour
         await UnityServices.InitializeAsync();
         await LogaAnonimamente();
       
+
     }
 
     async Task LogaAnonimamente()
@@ -57,7 +58,7 @@ public class LobbyManager : MonoBehaviour
                 Player = GetPlayer(),
                 Data = new Dictionary<string, DataObject>
                 {
-                    { "StarGame",new DataObject(DataObject.VisibilityOptions.Member,"0")}
+                    { "StarGame",new DataObject(DataObject.VisibilityOptions.Public,"0")}
                 }
             };
 
@@ -72,6 +73,13 @@ public class LobbyManager : MonoBehaviour
             InvokeRepeating("enviaPing", 5, 10);
 
             InvokeRepeating("verificaUpdate", 3, 3);
+
+            if (hostLobby != null) 
+            {
+                botaoInicia.SetActive(true);
+            }
+
+
 
         } 
         catch(LobbyServiceException e )
@@ -100,12 +108,14 @@ public class LobbyManager : MonoBehaviour
     {
         if (joinedLobby == null)
             return;
-        if (iniciouOJogo == true) 
+        if (joinedLobby.Data!=null && joinedLobby.Data.ContainsKey("StarGame") && joinedLobby.Data["StarGame"].Value !="0") 
         {
+            Debug.Log("Entrou aq");
             entraRelay(joinedLobby.Data["StarGame"].Value);
         }
         AtualizaLobby();
         MostraPlayers();
+
         // relizar conexao relay
     }
     public async void AtualizaLobby() 
@@ -134,7 +144,7 @@ public class LobbyManager : MonoBehaviour
         {
             Data = new Dictionary<string, PlayerDataObject>
             {
-                { "nome", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Member,InputNome.text)}
+                { "nome", new PlayerDataObject(PlayerDataObject.VisibilityOptions.Public,InputNome.text)}
             }
 
         };
@@ -225,11 +235,11 @@ public class LobbyManager : MonoBehaviour
         {
             Data = new Dictionary<string, DataObject> 
             {
-                {"StartGame", new DataObject(DataObject.VisibilityOptions.Member,CodigoRelay) }
+                {"StarGame", new DataObject(DataObject.VisibilityOptions.Public,CodigoRelay) }
             }
         });
         joinedLobby = lobby;
-        CancelInvoke("verificaUpdate");
+        //CancelInvoke("verificaUpdate");
         CancelInvoke("enviaPing");
 
         iniciouOJogo = true;
