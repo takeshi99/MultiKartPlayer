@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.VFX;
 using Unity.Netcode;
-using Codice.Utils;
+
 
 namespace KartGame.KartSystems
 {
@@ -601,11 +601,24 @@ namespace KartGame.KartSystems
         }
         public override void OnNetworkSpawn()
         {
-            if ( !IsOwner)
+            
+            if (!IsOwner)
             {
                 Destroy(this.GetComponentInChildren<Camera>());
+            }else 
+            {
+                Invoke("AlteraPos", 5f);
+                GetComponent<Rigidbody>().isKinematic = true;
+               
             }
+            
+
             base.OnNetworkSpawn();
+        }
+        public void AlteraPos() 
+        {
+            this.gameObject.transform.position = new Vector3(15,5,0);
+            GetComponent<Rigidbody>().isKinematic = false;
         }
     }
 
